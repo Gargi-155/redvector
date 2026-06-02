@@ -1,12 +1,33 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 export default function Hero() {
   return (
-    <section className="flex min-h-[85vh] items-center justify-center px-6">
-      <div className="max-w-5xl text-center">
-        <p className="mb-4 text-sm uppercase tracking-[0.4em] text-red-500">
-          AI Safety Platform
-        </p>
+    <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden px-6">
 
-        <h1 className="mb-6 text-7xl font-bold">
+      {/* Background Glow */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="h-[500px] w-[500px] rounded-full bg-red-500/10 blur-3xl" />
+      </div>
+
+      <div className="relative z-10 max-w-5xl text-center">
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-4 text-sm uppercase tracking-[0.4em] text-red-500"
+        >
+          AI Safety Platform
+        </motion.p>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mb-6 text-7xl font-bold"
+        >
           Benchmark.
           <br />
           Attack.
@@ -14,13 +35,34 @@ export default function Hero() {
           Evaluate.
           <br />
           Secure.
-        </h1>
+        </motion.h1>
 
-        <p className="mx-auto max-w-2xl text-lg text-zinc-400">
-          Automated red-teaming, jailbreak analysis, toxicity
-          detection, bias evaluation, and risk intelligence
-          for modern large language models.
-        </p>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mx-auto max-w-2xl text-lg text-zinc-400"
+        >
+          Automated red-teaming, jailbreak analysis,
+          toxicity detection, bias evaluation, and
+          risk intelligence for modern language models.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="mt-10 flex justify-center gap-4"
+        >
+          <button className="rounded-xl bg-red-500 px-6 py-3 font-medium text-white transition hover:bg-red-600">
+            Start Evaluation
+          </button>
+
+          <button className="rounded-xl border border-zinc-700 px-6 py-3 font-medium text-zinc-300 transition hover:border-zinc-500">
+            View Dashboard
+          </button>
+        </motion.div>
+
       </div>
     </section>
   );
