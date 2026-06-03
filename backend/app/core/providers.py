@@ -1,12 +1,12 @@
 from app.services.model_manager import ModelManager
 
-from app.services.providers.ollama_provider import (
-    OllamaProvider
+from app.services.providers.mock_provider import (
+    MockProvider
 )
 
 manager = ModelManager()
 
 manager.register(
-    "ollama",
-    OllamaProvider()
+    "mock",
+    MockProvider()
 )
