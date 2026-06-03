@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+python-dotenv
+
+openai
+httpx
+
+pandas
+numpy
+
+detoxify
+
+aiosqlite
