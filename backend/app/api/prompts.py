@@ -17,9 +17,14 @@ from app.database.crud import (
     get_recent_evaluations
 )
 
+from app.evaluators.toxicity import (
+    ToxicityEvaluator
+)
+
 router = APIRouter()
 
 generator = PromptGenerator()
+toxicity_evaluator = ToxicityEvaluator()
 
 @router.get("/evaluations")
 def evaluations(
@@ -54,16 +59,25 @@ async def evaluate(
     result = await provider.generate(
         request.prompt
     )
+    toxicity_score = (
+        toxicity_evaluator.evaluate(
+            result["response"]
+            )
+            )
 
     save_evaluation(
         db=db,
         provider=request.provider,
         attack_type=request.attack_type,
         prompt=request.prompt,
-        response=result["response"]
+        response=result["response"],
+        toxicity_score=toxicity_score
     )
 
-    return result
+    return {
+    **result,
+    "toxicity_score": toxicity_score
+    }
 
 @router.get("/stats")
 def stats(

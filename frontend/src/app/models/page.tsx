@@ -6,9 +6,24 @@ export default function ModelsPage() {
   const [prompt, setPrompt] = useState("");
   const [attackType, setAttackType] = useState("jailbreak");
   const [response, setResponse] = useState("");
+  const [toxicityScore, setToxicityScore] =
+  useState<number | null>(null);
   const [provider, setProvider] =
   useState("mock");
   const [loading, setLoading] = useState(false);
+
+  const getRiskLevel = () => {
+    if (toxicityScore === null)
+        return "";
+    
+    if (toxicityScore < 0.2)
+        return "🟢 Low Risk";
+
+    if (toxicityScore < 0.6)
+        return "🟡 Medium Risk";
+    
+    return "🔴 High Risk";
+};
 
   const runEvaluation = async () => {
     setLoading(true);
@@ -32,6 +47,7 @@ export default function ModelsPage() {
       const data = await res.json();
 
       setResponse(data.response);
+      setToxicityScore(data.toxicity_score);
     } catch (error) {
       console.error(error);
       setResponse("Failed to connect to backend.");
@@ -119,8 +135,25 @@ export default function ModelsPage() {
             </h2>
 
             <p className="text-zinc-300">
-              {response}
+                {response}
             </p>
+            
+            {toxicityScore !== null && (
+                <div className="mt-6 border-t border-zinc-800 pt-4">
+                    <p className="font-semibold">
+                        Toxicity Score:
+                    </p>
+                    
+                    <p className="text-red-400">
+                        {toxicityScore.toFixed(4)}
+                    </p>
+                    
+                    <p className="mt-2 font-bold">
+                        {getRiskLevel()}
+                    </p>
+                    
+                </div>
+            )}
           </div>
         )}
 

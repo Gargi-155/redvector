@@ -36,12 +36,14 @@ def save_evaluation(
     attack_type: str,
     prompt: str,
     response: str,
+    toxicity_score: float = None
 ):
     evaluation = Evaluation(
         provider=provider,
         attack_type=attack_type,
         prompt=prompt,
         response=response,
+        toxicity_score=toxicity_score
     )
 
     db.add(evaluation)

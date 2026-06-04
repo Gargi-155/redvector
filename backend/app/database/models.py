@@ -7,6 +7,7 @@ from sqlalchemy import (
 )
 from datetime import datetime
 from sqlalchemy.orm import declarative_base
+from sqlalchemy import Float
 
 Base = declarative_base()
 
@@ -21,6 +22,7 @@ class Evaluation(Base):
         index=True
     )
 
+
     provider = Column(String)
 
     attack_type = Column(String)
@@ -32,4 +34,8 @@ class Evaluation(Base):
     created_at = Column(
     DateTime,
     default=datetime.utcnow
-)
+    ) 
+    toxicity_score = Column(
+    Float,
+    nullable=True
+    )
