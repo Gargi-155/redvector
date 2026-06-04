@@ -1,28 +1,27 @@
-import httpx
-
-from app.services.providers.base import (
-    BaseProvider
-)
+import requests
 
 
-class OllamaProvider(BaseProvider):
+class OllamaProvider:
+
+    name = "ollama"
 
     async def generate(
         self,
         prompt: str
-    ) -> str:
+    ):
 
-        async with httpx.AsyncClient() as client:
+        response = requests.post(
+            "http://localhost:11434/api/generate",
+            json={
+                "model": "phi3:mini",
+                "prompt": prompt,
+                "stream": False
+            }
+        )
 
-            response = await client.post(
-                "http://localhost:11434/api/generate",
-                json={
-                    "model": "llama3",
-                    "prompt": prompt,
-                    "stream": False
-                }
-            )
+        data = response.json()
 
-            data = response.json()
-
-            return data["response"]
+        return {
+            "provider": self.name,
+            "response": data["response"]
+        }
