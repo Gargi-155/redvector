@@ -5,6 +5,7 @@ type Evaluation = {
   prompt: string;
   response: string;
   created_at: string;
+  toxicity_score?: number;
 };
 
 export default function EvaluationTable({
@@ -17,38 +18,71 @@ export default function EvaluationTable({
       <table className="w-full">
         <thead className="bg-zinc-900">
           <tr>
-            <th className="p-4 text-left">Provider</th>
-            <th className="p-4 text-left">Attack</th>
-            <th className="p-4 text-left">Prompt</th>
-            <th className="p-4 text-left">Time</th>
+            <th className="p-4 text-left">
+              Provider
+            </th>
+
+            <th className="p-4 text-left">
+              Attack
+            </th>
+
+            <th className="p-4 text-left">
+              Toxicity
+            </th>
+
+            <th className="p-4 text-left">
+              Risk
+            </th>
+
+            <th className="p-4 text-left">
+              Time
+            </th>
           </tr>
         </thead>
 
         <tbody>
-          {evaluations.map((evaluation) => (
-            <tr
-              key={evaluation.id}
-              className="border-t border-zinc-800"
-            >
-              <td className="p-4">
-                {evaluation.provider}
-              </td>
+          {evaluations.map(
+            (evaluation) => {
+              const toxicity =
+                evaluation.toxicity_score ?? 0;
 
-              <td className="p-4">
-                {evaluation.attack_type}
-              </td>
+              const risk =
+                toxicity < 0.2
+                  ? "🟢 Low"
+                  : toxicity < 0.6
+                  ? "🟡 Medium"
+                  : "🔴 High";
 
-              <td className="p-4">
-                {evaluation.prompt}
-              </td>
+              return (
+                <tr
+                  key={evaluation.id}
+                  className="border-t border-zinc-800"
+                >
+                  <td className="p-4">
+                    {evaluation.provider}
+                  </td>
 
-              <td className="p-4">
-                {new Date(
-                  evaluation.created_at
-                ).toLocaleString()}
-              </td>
-            </tr>
-          ))}
+                  <td className="p-4">
+                    {evaluation.attack_type}
+                  </td>
+
+                  <td className="p-4">
+                    {toxicity.toFixed(4)}
+                  </td>
+
+                  <td className="p-4">
+                    {risk}
+                  </td>
+
+                  <td className="p-4">
+                    {new Date(
+                      evaluation.created_at
+                    ).toLocaleString()}
+                  </td>
+                </tr>
+              );
+            }
+          )}
         </tbody>
       </table>
     </div>

@@ -6,11 +6,24 @@ export default function ModelsPage() {
   const [prompt, setPrompt] = useState("");
   const [attackType, setAttackType] = useState("jailbreak");
   const [response, setResponse] = useState("");
-  const [provider, setProvider] = useState("mock");
-  const [loading, setLoading] = useState(false);
+
+  const [provider, setProvider] =
+    useState("mock");
+
+  const [loading, setLoading] =
+    useState(false);
 
   const [toxicityScore, setToxicityScore] =
     useState<number | null>(null);
+
+  const [safetyScore, setSafetyScore] =
+    useState<number | null>(null);
+
+  const [jailbreakDetected, setJailbreakDetected] =
+    useState(false);
+
+  const [promptLeakDetected, setPromptLeakDetected] =
+    useState(false);
 
   const [generatedPrompts, setGeneratedPrompts] =
     useState<string[]>([]);
@@ -35,7 +48,8 @@ export default function ModelsPage() {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type":
+              "application/json",
           },
           body: JSON.stringify({
             attack_type: attackType,
@@ -45,7 +59,9 @@ export default function ModelsPage() {
 
       const data = await res.json();
 
-      setGeneratedPrompts(data.prompts);
+      setGeneratedPrompts(
+        data.prompts
+      );
     } catch (error) {
       console.error(error);
     }
@@ -60,7 +76,8 @@ export default function ModelsPage() {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type":
+              "application/json",
           },
           body: JSON.stringify({
             provider,
@@ -73,10 +90,28 @@ export default function ModelsPage() {
       const data = await res.json();
 
       setResponse(data.response);
-      setToxicityScore(data.toxicity_score);
+
+      setToxicityScore(
+        data.toxicity_score
+      );
+
+      setSafetyScore(
+        data.safety_score
+      );
+
+      setJailbreakDetected(
+        data.jailbreak_detected
+      );
+
+      setPromptLeakDetected(
+        data.prompt_leak_detected
+      );
     } catch (error) {
       console.error(error);
-      setResponse("Failed to connect to backend.");
+
+      setResponse(
+        "Failed to connect to backend."
+      );
     }
 
     setLoading(false);
@@ -93,8 +128,6 @@ export default function ModelsPage() {
       </p>
 
       <div className="mt-10 max-w-3xl">
-
-        {/* Provider */}
 
         <label className="block mb-2">
           Provider
@@ -115,8 +148,6 @@ export default function ModelsPage() {
             Ollama (Phi-3)
           </option>
         </select>
-
-        {/* Attack Type */}
 
         <label className="block mb-2">
           Attack Type
@@ -154,16 +185,12 @@ export default function ModelsPage() {
           </option>
         </select>
 
-        {/* Generate Prompts */}
-
         <button
           onClick={generatePrompts}
           className="mb-6 rounded-lg bg-zinc-800 px-5 py-2 hover:bg-zinc-700"
         >
           Generate Attack Prompts
         </button>
-
-        {/* Suggested Prompts */}
 
         {generatedPrompts.length > 0 && (
           <div className="mb-6">
@@ -173,11 +200,16 @@ export default function ModelsPage() {
 
             <div className="space-y-2">
               {generatedPrompts.map(
-                (generatedPrompt, index) => (
+                (
+                  generatedPrompt,
+                  index
+                ) => (
                   <button
                     key={index}
                     onClick={() =>
-                      setPrompt(generatedPrompt)
+                      setPrompt(
+                        generatedPrompt
+                      )
                     }
                     className="block w-full rounded-lg bg-zinc-900 p-3 text-left hover:bg-zinc-800"
                   >
@@ -189,8 +221,6 @@ export default function ModelsPage() {
           </div>
         )}
 
-        {/* Prompt */}
-
         <label className="block mb-2">
           Prompt
         </label>
@@ -198,13 +228,13 @@ export default function ModelsPage() {
         <textarea
           value={prompt}
           onChange={(e) =>
-            setPrompt(e.target.value)
+            setPrompt(
+              e.target.value
+            )
           }
           placeholder="Enter a prompt..."
           className="w-full h-40 rounded-lg bg-zinc-900 p-4"
         />
-
-        {/* Run Button */}
 
         <button
           onClick={runEvaluation}
@@ -215,8 +245,6 @@ export default function ModelsPage() {
             ? "Running..."
             : "Run Evaluation"}
         </button>
-
-        {/* Results */}
 
         {response && (
           <div className="mt-10 rounded-xl border border-zinc-800 p-6">
@@ -229,19 +257,51 @@ export default function ModelsPage() {
             </p>
 
             {toxicityScore !== null && (
-              <div className="mt-6 border-t border-zinc-800 pt-4">
-                <p className="font-semibold">
-                  Toxicity Score:
-                </p>
+              <>
+                <div className="mt-6 border-t border-zinc-800 pt-4">
+                  <p className="font-semibold">
+                    Toxicity Score
+                  </p>
 
-                <p className="text-red-400">
-                  {toxicityScore.toFixed(4)}
-                </p>
+                  <p className="text-red-400">
+                    {toxicityScore.toFixed(
+                      4
+                    )}
+                  </p>
 
-                <p className="mt-2 font-bold">
-                  {getRiskLevel()}
-                </p>
-              </div>
+                  <p className="mt-2 font-bold">
+                    {getRiskLevel()}
+                  </p>
+                </div>
+
+                <div className="mt-6 border-t border-zinc-800 pt-4">
+                  <h3 className="font-bold text-lg mb-3">
+                    Safety Report
+                  </h3>
+
+                  <p>
+                    Jailbreak Detection:
+                    {" "}
+                    {jailbreakDetected
+                      ? "❌ Failed"
+                      : "✅ Passed"}
+                  </p>
+
+                  <p>
+                    Prompt Leak Detection:
+                    {" "}
+                    {promptLeakDetected
+                      ? "❌ Failed"
+                      : "✅ Passed"}
+                  </p>
+
+                  <p className="mt-4 text-xl font-bold text-green-400">
+                    Safety Score:
+                    {" "}
+                    {safetyScore}/100
+                  </p>
+                </div>
+              </>
             )}
           </div>
         )}

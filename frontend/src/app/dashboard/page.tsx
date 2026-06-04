@@ -19,6 +19,7 @@ interface Evaluation {
   prompt: string;
   response: string;
   created_at: string;
+  toxicity_score?: number;
 }
 
 export default function DashboardPage() {
