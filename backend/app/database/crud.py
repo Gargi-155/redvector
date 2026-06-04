@@ -62,3 +62,15 @@ def get_recent_evaluations(
         .limit(limit)
         .all()
     )
+
+def get_evaluation_by_id(
+    db: Session,
+    evaluation_id: int
+):
+    return (
+        db.query(Evaluation)
+        .filter(
+            Evaluation.id == evaluation_id
+        )
+        .first()
+    )

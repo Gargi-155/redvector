@@ -15,6 +15,7 @@ from app.database.crud import (
     get_evaluations,
     get_stats,
     get_recent_evaluations,
+    get_evaluation_by_id,
 )
 
 from app.evaluators.toxicity import (
@@ -133,3 +134,13 @@ def recent_evaluations(
     db: Session = Depends(get_db)
 ):
     return get_recent_evaluations(db)
+
+@router.get("/evaluation/{evaluation_id}")
+def evaluation_details(
+    evaluation_id: int,
+    db: Session = Depends(get_db)
+):
+    return get_evaluation_by_id(
+        db,
+        evaluation_id
+    )
